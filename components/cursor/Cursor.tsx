@@ -15,7 +15,14 @@ const Cursor = ({color,x,y,message}:Props) => {
     style={{transform:`translateX(${x}px) translateY(${y}px)`}}
     >
         <CursorSVG color={color} />
-        {/* message */}
+      {/* if any user having a message show the message */}
+      {
+        message && (
+          <div>
+            <p>{message}</p>
+          </div>
+        )
+      }
     </div>
   )
 }
