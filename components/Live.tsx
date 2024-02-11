@@ -3,7 +3,7 @@ import { useMyPresence, useOthers } from "@/liveblocks.config"
 import LiveCursor from "./cursor/LiveCursor"
 import { useCallback,useEffect,useState } from "react";
 import CursorChat from "./cursor/CursorChat";
-import { CursorMode } from "@/types/types";
+import { CursorMode, Reaction } from "@/types/types";
 
 const Live = () => {
 
@@ -11,6 +11,8 @@ const Live = () => {
   const [cursorState, setCursorState] = useState({
     mode:CursorMode.Hidden,
   });
+
+  const [reaction,setReaction] = useState<Reaction[]>([]);
  
   const others = useOthers();
   const [{cursor},updateMyPresence] = useMyPresence() as any;
@@ -49,45 +51,37 @@ const Live = () => {
   },[]);
   
   // Track the key events for the chat box opening and closing
-  useEffect(()=>{
-
-    //open the chat box on click of / key
-
-    const onKeyUp =  (e:KeyboardEvent) =>{
-        if(e.key === '/'){
-          setCursorState({
-            mode:CursorMode.Chat,
-            previousMessage:null,
-            message:""
-          })
-        }
-        else if(e.key === 'Escape'){
-          updateMyPresence({
-            message:""
-          });
-          setCursorState({
-            mode:CursorMode.Hidden
-          });
-        }
-        else if(e.key === "e"){
-
-        }
+  useEffect(() => {
+    function onKeyUp(e : KeyboardEvent) {
+      if (e.key === "/") {
+        setCursorState({ mode: CursorMode.Chat, previousMessage: null, message: "" });
+      } else if (e.key === "Escape") {
+        console.log("Escape");
+        updateMyPresence({ message: "" });
+        setCursorState({ mode: CursorMode.Hidden });
+      } else if (e.key === "e") {
+        // Handle other key events
+      }
     }
 
-    const onKeyDown = (e:KeyboardEvent)=>{
-        if(e.key === '/'){
-          e.preventDefault();
-        }
+    function onKeyDown(e:KeyboardEvent) {
+      if (e.key === "/") {
+        e.preventDefault();
+      }
+      else if (e.key === "Escape") {
+        updateMyPresence({ message: "" });
+        setCursorState({ mode: CursorMode.Hidden });
+      }
     }
-    window.addEventListener("keyup",onKeyUp);
-    window.addEventListener("keydown",onKeyDown);
 
-    return ()=>{
-      window.addEventListener("keyup",onKeyUp);
-      window.addEventListener("keydown",onKeyDown); 
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
     };
-
-  },[useMyPresence])
+  }, [updateMyPresence]);
   
   
   return (
@@ -99,6 +93,8 @@ const Live = () => {
     className="w-full h-full flex justify-center items-center text-center"
     >
         <h1 className="text-2xl text-white">Liveblocks figma clone</h1>
+        
+        {/* If cursor chat is enabled then show to all the members in the room */}
         {
           cursor && <CursorChat
           cursor={cursor}
@@ -107,6 +103,8 @@ const Live = () => {
           updateMyPresence={updateMyPresence}
           />
         }
+
+
         <LiveCursor others={others}/>
     </div>
   )
