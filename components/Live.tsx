@@ -8,6 +8,10 @@ import ReactionSelector from "./reaction/ReactionButton";
 import FlyingReaction from "./reaction/FlyingReaction";
 import useInterval from "@/hooks/useInterval";
 
+type Props = {
+    canvasRef:React.MutableRefObject<HTMLCanvasElement | null>;
+}
+
 const Live = () => {
 
 
@@ -161,13 +165,14 @@ const Live = () => {
   return (
   
     <div
+    id="canvas"
     onPointerMove={handlePointerMove}
     onPointerDown={handlePointerDown}
     onPointerLeave={handlePointerLeave}
     className="w-full h-full flex justify-center items-center text-center"
     >
-        <h1 className="text-2xl text-white">Liveblocks figma clone</h1>
-
+      
+      <canvas />
 
         {/* Setting up the flying reactions */}
         {
