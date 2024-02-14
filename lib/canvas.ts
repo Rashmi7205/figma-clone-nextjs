@@ -10,7 +10,7 @@ import {
   CanvasPathCreated,
   CanvasSelectionCreated,
   RenderCanvas,
-} from "@/types/types";
+} from "@/types/type";
 import { defaultNavElement } from "@/constants";
 import { createSpecificShape } from "./shapes";
 

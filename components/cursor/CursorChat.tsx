@@ -1,36 +1,40 @@
-import CursorSVG from '@/public/assets/CursorSVG'
-import { CursorChatProps, CursorMode } from '@/types/types'
-import React from 'react'
+import { CursorChatProps, CursorMode } from "@/types/type";
+import CursorSVG from "@/public/assets/CursorSVG";
 
-const CursorChat = ({cursor,cursorState,setCursorState,updateMyPresence}:CursorChatProps) => {
- 
-  const handleChange = (e :React.ChangeEvent<HTMLInputElement>)=>{
-      updateMyPresence({message:e.target.value});
+const CursorChat = ({ cursor, cursorState, setCursorState, updateMyPresence }: CursorChatProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateMyPresence({ message: e.target.value });
+    setCursorState({
+      mode: CursorMode.Chat,
+      previousMessage: null,
+      message: e.target.value,
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
       setCursorState({
-        mode:CursorMode.Chat,
-        previousMessage:null,
-        message:e.target.value
+        mode: CursorMode.Chat,
+        // @ts-ignore
+        previousMessage: cursorState.message,
+        message: "",
       });
-  }
-  const handleKeyDown = (e :React.ChangeEvent<HTMLInputElement>)=>{
-        if(e.key === "Enter"){
-          setCursorState({
-            mode:CursorMode.Chat,
-            previousMessage:cursorState.message,
-            message:""
-          });
-        }
-  }
-  
-  
+    } else if (e.key === "Escape") {
+      setCursorState({
+        mode: CursorMode.Hidden,
+      });
+    }
+  };
+
   return (
     <div
       className="absolute top-0 left-0"
-      style={{transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`}}
+      style={{
+        transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
+      }}
     >
       {/* Show message input when cursor is in chat mode */}
-      {cursorState.mode === CursorMode.Chat &&(
-       
+      {cursorState.mode === CursorMode.Chat && (
         <>
           {/* Custom Cursor shape */}
           <CursorSVG color="#000" />
@@ -63,6 +67,6 @@ const CursorChat = ({cursor,cursorState,setCursorState,updateMyPresence}:CursorC
       )}
     </div>
   );
-}
+};
 
-export default CursorChat
+export default CursorChat;

@@ -1,35 +1,10 @@
-"use client";
+import dynamic from "next/dynamic";
 
-import Leftsidebar from "@/components/Leftsidebar";
-import Live from "@/components/Live";
-import Rightsidebar from "@/components/Rightsidebar";
-import { useEffect, useRef } from "react";
-import fabric from 'fabric';
-import { initializeFabric } from "@/lib/canvas";
+/**
+ * disable ssr to avoid pre-rendering issues of Next.js
+ *
+ * we're doing this because we're using a canvas element that can't be pre-rendered by Next.js on the server
+ */
+const App = dynamic(() => import("./App"), { ssr: false });
 
-
-export default function Page() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fabricRef = useRef<fabric.Canvas | null>(null);
-  const isDrawing = useRef (false);
-
-
-  useEffect(()=>{
-
-    const canvas = initializeFabric({fabricRef,canvasRef})
-
-
-  },[]);
-
-  return (
-      <div className="w-full h-screen overflow-hidden">
-        
-        <section className="flex flex-row h-full">
-        <Leftsidebar/>
-        <Live />
-        <Rightsidebar/>
-        </section>
-
-      </div>
-  );
-}
+export default App;
